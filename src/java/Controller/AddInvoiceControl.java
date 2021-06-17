@@ -98,7 +98,7 @@ public class AddInvoiceControl extends HttpServlet {
             try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
                 out.println("<script type=\"text/javascript\">");
-                out.println("alert('Đã có mã sản phẩm!');");
+                out.println("alert('Da co ma hoa don!');");
                 out.println("location='addinvoice';");
                 out.println("</script>");
             }

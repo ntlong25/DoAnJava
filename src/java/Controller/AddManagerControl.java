@@ -6,6 +6,7 @@
 package Controller;
 
 import DAO.DAO_Manager;
+import Model.Account;
 import Model.ChucVu;
 import Model.Manager;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -40,16 +42,34 @@ public class AddManagerControl extends HttpServlet {
         String cateID = request.getParameter("MACV");
         List<ChucVu> listCV = d.getAllCV();
         
+        HttpSession ss = request.getSession();
+        Account acc = (Account) ss.getAttribute("acc");
+        if(CheckMaCV(acc.getUsername())){
+            try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('Khong phai quan ly!!!');");
+                out.println("location='home';");
+                out.println("</script>");
+            }
+        }else{
+            
+            request.setAttribute("listCV", listCV);
+            request.setAttribute("tag", cateID);
+            request.getRequestDispatcher("AddManager.jsp").forward(request, response);
+        }
         //b2: set data to jsp
-        request.setAttribute("listCV", listCV);
-        request.setAttribute("tag", cateID);
-        request.getRequestDispatcher("AddManager.jsp").forward(request, response);
     }
 
     private boolean CheckMaNV(String ma){
         DAO_Manager dao = new DAO_Manager();
         List<Manager> list = dao.getAllManager();
         return list.stream().noneMatch(p -> (p.getMANV().equals(ma)));
+    }
+    private boolean CheckMaCV(String ma){
+        DAO_Manager dao = new DAO_Manager();
+        List<Manager> list = dao.getAllManager();
+        return list.stream().noneMatch(p -> (p.getMANV().equals(ma) && p.getMACV().equals("QLCH")));
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

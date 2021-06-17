@@ -6,6 +6,7 @@
 package Controller;
 
 import DAO.DAO_Manager;
+import Model.Account;
 import Model.ChucVu;
 import Model.Manager;
 import java.io.IOException;
@@ -16,6 +17,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -59,9 +61,27 @@ public class UpdateManagerControl extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    
+    private boolean CheckMaCV(String ma){
+        DAO_Manager dao = new DAO_Manager();
+        List<Manager> list = dao.getAllManager();
+        return list.stream().noneMatch(p -> (p.getMANV().equals(ma) && p.getMACV().equals("QLCH")));
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        HttpSession ss = request.getSession();
+        Account acc = (Account) ss.getAttribute("acc");
+        if(CheckMaCV(acc.getUsername())){
+            try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('Khong phai quan ly!!!');");
+                out.println("location='home';");
+                out.println("</script>");
+            }
+        }else{
         String maNV = request.getParameter("eid");
         DAO_Manager dao = new DAO_Manager();
         Manager m = dao.getManagerByID(maNV);
@@ -72,6 +92,7 @@ public class UpdateManagerControl extends HttpServlet {
         request.setAttribute("listCV", listCV);
         request.setAttribute("upM", m);
         request.getRequestDispatcher("UpdateManager.jsp").forward(request, response);
+        }
     }
 
     /**

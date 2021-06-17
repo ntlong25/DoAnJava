@@ -6,13 +6,17 @@
 package Controller;
 
 import DAO.DAO_Manager;
+import Model.Account;
+import Model.Manager;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -55,16 +59,34 @@ public class DeleteManagerControl extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
-     */
+     */private boolean CheckMaCV(String ma){
+        DAO_Manager dao = new DAO_Manager();
+        List<Manager> list = dao.getAllManager();
+        return list.stream().noneMatch(p -> (p.getMANV().equals(ma) && p.getMACV().equals("QLCH")));
+    }
     @Override
+    
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //b1: get pidfrom jsp
-        String id = request.getParameter("eid");
+        HttpSession ss = request.getSession();
+        Account acc = (Account) ss.getAttribute("acc");
+        if(CheckMaCV(acc.getUsername())){
+            try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('Khong phai quan ly!!!');");
+                out.println("location='home';");
+                out.println("</script>");
+            }
+        }else{
+            String id = request.getParameter("eid");
         //b2: pas pid to dao
         DAO_Manager dao = new DAO_Manager();
         dao.delManager(id);
         response.sendRedirect("manager");
+        }
+        
     }
 
     /**

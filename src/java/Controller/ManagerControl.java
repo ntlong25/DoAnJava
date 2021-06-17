@@ -6,6 +6,7 @@
 package Controller;
 
 import DAO.DAO_Manager;
+import Model.Account;
 import Model.ChucVu;
 import Model.Manager;
 import java.io.IOException;
@@ -34,6 +35,11 @@ public class ManagerControl extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private boolean CheckMaCV(String ma){
+        DAO_Manager dao = new DAO_Manager();
+        List<Manager> list = dao.getAllManager();
+        return list.stream().noneMatch(p -> (p.getMANV().equals(ma) && p.getMACV().equals("QLCH")));
+    }
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");

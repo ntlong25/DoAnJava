@@ -111,17 +111,17 @@ public class RegistryControl extends HttpServlet {
                 catch(Exception ex){
                 }
             }
-            else if(!CheckMaCV(user)){
-                try (PrintWriter out = response.getWriter()) {
-                /* TODO output your page here. You may use following sample code. */
-                    out.println("<script type=\"text/javascript\">");
-                    out.println("alert('Khong co ma nhan vien nay!');");
-                    out.println("location='registry';");
-                    out.println("</script>");
-                }
-                catch(Exception ex){
-                }
-            }
+//            else if(!CheckMaCV(user)){
+//                try (PrintWriter out = response.getWriter()) {
+//                /* TODO output your page here. You may use following sample code. */
+//                    out.println("<script type=\"text/javascript\">");
+//                    out.println("alert('Khong co ma nhan vien nay!');");
+//                    out.println("location='registry';");
+//                    out.println("</script>");
+//                }
+//                catch(Exception ex){
+//                }
+//            }
             else{
                 dao.CreateAccount(user, pass);
                 response.sendRedirect("manager");
